@@ -1,0 +1,113 @@
+<HTML>
+
+<HEAD>
+<TITLE>Using Object Files and Libraries - Unix</TITLE>
+</HEAD>
+
+<BODY>
+
+<H1>
+<CENTER>
+Using Object Files and Libraries - Unix
+</CENTER></H1>
+
+<HR>
+<p>
+Here is a program in
+the file <a href="selection.c">selection.c</a> that does selection sort.
+As you can see, it uses three functions. 
+<ol>
+<li>One function
+reads a sequence of integers.
+<li>One function prints a sequence of integers. 
+<li>And one function rearranges
+a sequence of integers using selection sort.
+</ol>
+<p>
+Here is how we might compile and run this program:
+<p>
+<pre>
+    <strong>% gcc -Wall -W -o selection selection.c</strong>
+    <strong>% selection</strong>
+</pre>
+<p>
+
+It is easy to imagine that the three 
+functions could be handy in writing other programs.
+We can decompose the original program into three files:
+<p>
+<ol>
+<li><a href="intArray.h">intArray.h</a> that contains declarations for 
+the three functions
+<li><a href="intArray.c">intArray.c</a> that contains the definitions of
+the three functions
+<li><a href="selectionMain.c">selectionMain.c</a> that contains the 
+main function of the program.
+</ol>
+<p>
+If you look in <strong>selectionMain.c</strong>, 
+you will see that it includes the file
+<strong>intArray.h</strong>, 
+thus knows the prototypes of the three functions and the compiler can
+make sure that they are used correctly in <strong>selectionMain.c</strong>.
+<p>
+The three files can be used as follows:
+<p>
+<pre>
+    <strong>% gcc -Wall -W -o selection selectionMain.c intArray.c</strong>
+    <strong>% selection</strong>
+</pre>
+<p>
+The first of these two commands compiles 
+<strong>selectionMain.c</strong> and <strong>intArray.c</strong>
+and links them together to create the executable file 
+<strong>selection</strong>. The second
+of these commands executes the <strong>selection</strong> file.
+<p>
+We could have achieved exactly the same result with the commands:
+<p>
+<pre>
+    <strong>% gcc -Wall -W -c intArray.c</strong>
+    <strong>% gcc -Wall -W -c selectionMain.c</strong>
+    <strong>% gcc -o selection selectionMain.o intArray.o</strong>
+    <strong>% selection</strong>
+</pre>
+<p>
+The first command creates the <strong>intArray.o</strong> file,
+the second command creates the <strong>selectionMain.o</strong>
+file. 
+Notice that now if we have a bug in 
+<strong>intArray.c</strong> we need only recompile
+the <strong>intArray.c</strong> file [and then link]. 
+And if we have a bug in 
+<strong>selectionMain.c</strong> we need only recompile 
+the <strong>selectionMain.c</strong> file
+[and then link]. By the way, in Unix people use the utility
+<strong>make</strong> to manage compilations, linking, libraries,
+and the like. 
+<p>
+Since the odds are that the three functions will be debugged
+once and then used in many programs, we may even save the object file
+<strong>intArray.o</strong>
+in a library [later we may keep also other useful
+object files in this library].
+<p>
+Here is how we can create the library file, say, <strong>cis71.a</strong> :
+<p>
+<pre>
+   <strong>% ar  -qs  cis71.a  intArray.o </strong><P>
+</pre>
+<p>
+and here is how we can use this library to create 
+the executable file <strong>selection</strong>:
+<p>
+<pre>
+   <strong>% gcc  -Wall -W -o selection selectionMain.c  cis71.a </B><P>
+</pre>
+<p>
+
+<HR>
+
+</BODY>
+
+</HTML>
